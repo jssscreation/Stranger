@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talk to Stranger</title>
+    <title>Talk to a Stranger</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Talk to a Stranger</h1>
-    <button id="connectButton">Connect</button>
-    <div id="status">Not connected</div>
-    <audio id="audio" autoplay></audio>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+    <div class="container">
+        <h1>Welcome to Talk to a Stranger</h1>
+        <p>Connect with a random stranger to chat or call.</p>
+        <div class="options">
+            <button id="chatBtn" class="btn">Chat with a Stranger</button>
+            <button id="callBtn" class="btn">Call with a Stranger</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('chatBtn').onclick = () => {
+            window.location.href = '/chat.html';
+        };
+        document.getElementById('callBtn').onclick = () => {
+            window.location.href = '/call.html';
+        };
+    </script>
 </body>
 </html>
