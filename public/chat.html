@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with a Stranger</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Chat with a Stranger</h1>
+        <div id="chatBox" class="chat-box"></div>
+        <input type="text" id="chatInput" placeholder="Type a message..." />
+        <button id="sendBtn" class="btn">Send</button>
+    </div>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:3000');
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        ws.onmessage = (message) => {
+            const msg = document.createElement('div');
+            msg.className = 'message';
+            msg.innerText = message.data;
+            chatBox.appendChild(msg);
+        };
+
+        sendBtn.onclick = () => {
+            if (chatInput.value.trim()) {
+                ws.send(chatInput.value);
+                chatInput.value = '';
+            }
+        };
+    </script>
+</body>
+</html>
