@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call with a Stranger</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Call with a Stranger</h1>
+        <button id="startCall" class="btn">Start Call</button>
+    </div>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:3000');
+
+        document.getElementById('startCall').onclick = () => {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then((stream) => {
+                    const audioContext = new AudioContext();
+                    const source = audioContext.createMediaStreamSource(stream);
+                    const processor = audioContext.createScriptProcessor(1024, 1, 1);
+
+                    source.connect(processor);
+                    processor.connect(audioContext.destination);
+
+                    processor.onaudioprocess = (event) => {
+                        ws.send(event.inputBuffer.getChannelData(0).buffer);
+                    };
+                })
+                .catch((err) => {
+                    console.error('Microphone access denied:', err);
+                });
+        };
+
+        ws.onmessage = (event) => {
+            const audioContext = new AudioContext();
+            audioContext.decodeAudioData(event.data, (buffer) => {
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+                source.start(0);
+            });
+        };
+    </script>
+</body>
+</html>
